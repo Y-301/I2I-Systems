@@ -1,0 +1,13 @@
+# Start Hazelcast
+docker run -d --name hazelcast -p 5701:5701 hazelcast/hazelcast:latest
+docker run -d --name hazelcast-mc -p 8080:8080 hazelcast/management-center:latest
+
+# Create project
+mkdir C:\HazelcastExample
+cd C:\HazelcastExample
+mkdir src
+mkdir lib
+
+# After writing code & downloading jar
+javac -cp "lib/*" src\*.java -d out
+java -cp "out;lib/*" HazelcastTest
