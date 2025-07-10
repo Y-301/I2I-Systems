@@ -9,4 +9,4 @@ It is publicly available for review purposes by I2I Systems.
 
 ---
 
-© 2025 Yahia. See the [LICENSE](LICENSE) file for license details.
+© 2025 Y-301. See the [LICENSE](LICENSE) file for license details.
