@@ -1,0 +1,75 @@
+DECLARE
+    -- Function to validate the input string (now allows adjacent duplicates)
+    FUNCTION is_valid_string(p_string IN VARCHAR2) RETURN BOOLEAN IS
+    BEGIN
+        -- Check maximum length
+        IF LENGTH(p_string) > 30 THEN
+            RETURN FALSE;
+        END IF;
+        
+        -- Check for space or numeric characters
+        IF REGEXP_LIKE(p_string, '[ 0-9]') THEN
+            RETURN FALSE;
+        END IF;
+        
+        -- Check for non-adjacent duplicate characters
+        FOR i IN 1..LENGTH(p_string) LOOP
+            -- Only check against characters before the previous occurrence
+            -- (allows adjacent duplicates but not non-adjacent ones)
+            IF INSTR(SUBSTR(p_string, 1, i-2), SUBSTR(p_string, i, 1)) > 0 THEN
+                RETURN FALSE;
+            END IF;
+        END LOOP;
+        
+        RETURN TRUE;
+    END is_valid_string;
+    
+    -- Procedure to print the string in XML format
+    PROCEDURE print_xml_format(p_string IN VARCHAR2) IS
+        v_level NUMBER := 0;
+        v_direction NUMBER := 1; -- 1 for increasing, -1 for decreasing
+        v_midpoint NUMBER := FLOOR(LENGTH(p_string)/2);
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('string: ' || p_string);
+        
+        FOR i IN 1..LENGTH(p_string) LOOP
+            -- Print spaces based on level
+            FOR j IN 1..v_level LOOP
+                DBMS_OUTPUT.PUT(' ');
+            END LOOP;
+            
+            -- Print the character
+            DBMS_OUTPUT.PUT_LINE(SUBSTR(p_string, i, 1));
+            
+            -- Adjust level based on position in string
+            IF i <= v_midpoint THEN
+                v_level := v_level + 1;
+            ELSE
+                v_level := v_level - 1;
+            END IF;
+        END LOOP;
+    END print_xml_format;
+    
+    -- Main program
+BEGIN
+    -- Test case 1
+    BEGIN
+        print_xml_format('acbbcadefghkkhgfed');
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error processing string: acbbcadefghkkhgfed');
+            DBMS_OUTPUT.PUT_LINE(SQLERRM);
+    END;
+    
+    DBMS_OUTPUT.PUT_LINE('');
+    
+    -- Test case 2
+    BEGIN
+        print_xml_format('abbcddfggfca');
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error processing string: abbcddfggfca');
+            DBMS_OUTPUT.PUT_LINE(SQLERRM);
+    END;
+END;
+/
